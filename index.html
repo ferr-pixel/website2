@@ -127,6 +127,47 @@
       transform: scale(1.05);
       box-shadow: 0 0 15px #7e5bef, 0 0 25px #b68aff;
     }
+
+    /* Music info: album art + title + progress bar */
+    #music-info {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 3;
+      position: relative;
+    }
+
+    #album-art {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #7e5bef;
+      margin-bottom: 6px;
+    }
+
+    #song-title {
+      color: #cbd5e1;
+      font-size: 14px;
+      margin-bottom: 6px;
+      text-shadow: 0 0 5px #7e5bef;
+    }
+
+    #progress-container {
+      width: 120px;
+      height: 6px;
+      background: #1f2937;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    #progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #7e5bef;
+      border-radius: 3px;
+      transition: width 0.1s linear;
+    }
   </style>
 </head>
 <body>
@@ -135,12 +176,61 @@
   <h1>Ferrets Links</h1>
 
   <div class="grid" id="links">
-    <!-- Example Social -->
+    <!-- Socials -->
     <div class="item" data-type="link" data-href="https://youtube.com/@baguette_69-69">
       <div class="panel"><div class="circle"><img src="logos/youtube.png" alt="YouTube"></div></div>
       <div class="label">YouTube</div>
     </div>
-    <!-- Add other socials and crypto here -->
+    <div class="item" data-type="link" data-href="https://open.spotify.com/user/1257265584?si=ce8dd88c90bf4bc7">
+      <div class="panel"><div class="circle"><img src="logos/spotify.png" alt="Spotify"></div></div>
+      <div class="label">Spotify</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://tiktok.com/@ferrets_are_noodles0_0">
+      <div class="panel"><div class="circle"><img src="logos/tiktok.png" alt="TikTok"></div></div>
+      <div class="label">TikTok</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://twitch.tv/the_stoned_frog">
+      <div class="panel"><div class="circle"><img src="logos/twitch.png" alt="Twitch"></div></div>
+      <div class="label">Twitch</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://vk.com/f3rr3ts">
+      <div class="panel"><div class="circle"><img src="logos/vk.png" alt="VK"></div></div>
+      <div class="label">VK</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://steamcommunity.com/profiles/76561199750130807/">
+      <div class="panel"><div class="circle"><img src="logos/steam.png" alt="Steam"></div></div>
+      <div class="label">Steam</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://cash.app/$ferretscash">
+      <div class="panel"><div class="circle"><img src="logos/cashapp.png" alt="CashApp"></div></div>
+      <div class="label">CashApp</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://paypal.me/ferrets69">
+      <div class="panel"><div class="circle"><img src="logos/paypal.png" alt="PayPal"></div></div>
+      <div class="label">PayPal</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://ko-fi.com/f3rr3ts">
+      <div class="panel"><div class="circle"><img src="logos/kofi.png" alt="Ko-fi"></div></div>
+      <div class="label">Ko-fi</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://throne.com/ferr3">
+      <div class="panel"><div class="circle"><img src="logos/throne.png" alt="Throne"></div></div>
+      <div class="label">Throne</div>
+    </div>
+
+    <!-- Crypto (copy only) -->
+    <div class="item" data-type="wallet" data-value="bc1qf5yj006aul7nly7xycpzyl4tzy7gh90audrjla">
+      <div class="panel"><div class="circle"><img src="logos/bitcoin.png" alt="Bitcoin"></div></div>
+      <div class="label">BTC</div>
+    </div>
+    <div class="item" data-type="wallet" data-value="0xD40247e7b3f7F081f8Db3EC582afBDE9F59451Fe">
+      <div class="panel"><div class="circle"><img src="logos/ethereum.png" alt="Ethereum"></div></div>
+      <div class="label">ETH</div>
+    </div>
+    <div class="item" data-type="wallet" data-value="LNR7PxLc5ffrhnKgXptcvgjBRiAd32E1VU">
+      <div class="panel"><div class="circle"><img src="logos/litecoin.png" alt="Litecoin"></div></div>
+      <div class="label">LTC</div>
+    </div>
   </div>
 
   <div id="toast" class="toast">Copied!</div>
@@ -149,9 +239,19 @@
   <audio id="bg-music" loop>
     <source src="music/keeping secrets - wifiskeleton.mp3" type="audio/mpeg">
   </audio>
+
   <div id="music-controls">
     <button id="play-btn">▶ Play Music</button>
     <button id="stop-btn">⏹ Stop Music</button>
+  </div>
+
+  <!-- Music Info -->
+  <div id="music-info">
+    <img id="album-art" src="music/album-cover.jpg" alt="Album Cover">
+    <div id="song-title">Keeping Secrets - Wifiskeleton</div>
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
   </div>
 
   <script>
@@ -227,9 +327,22 @@
     const music = document.getElementById('bg-music');
     const playBtn = document.getElementById('play-btn');
     const stopBtn = document.getElementById('stop-btn');
+    const progressBar = document.getElementById('progress-bar');
 
     playBtn.addEventListener('click', () => music.play());
-    stopBtn.addEventListener('click', () => { music.pause(); music.currentTime = 0; });
+    stopBtn.addEventListener('click', () => { music.pause(); music.currentTime = 0; progressBar.style.width = '0%'; });
+
+    // Update progress bar
+    music.addEventListener('timeupdate', () => {
+      const percent = (music.currentTime / music.duration) * 100;
+      progressBar.style.width = percent + '%';
+    });
+
+    // Loop track
+    music.addEventListener('ended', () => {
+      music.currentTime = 0;
+      music.play();
+    });
   </script>
 </body>
 </html>
