@@ -43,12 +43,16 @@ body {
 /* Grid for icons */
 .grid {
   display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(80px,1fr));
+  grid-template-columns:repeat(auto-fill, minmax(80px,1fr));
+  grid-auto-rows:100px;
   gap:24px;
   justify-items:center;
   align-items:center;
+  max-height:80vh;
+  overflow-y:auto;
 }
 
+/* Icon circles */
 .circle {
   width:80px; height:80px; border-radius:50%; background:#1f2937;
   display:flex; justify-content:center; align-items:center;
@@ -60,6 +64,9 @@ body {
 .circle:hover { transform:scale(1.15); box-shadow:0 0 30px #7e5bef; }
 
 .circle img { width:40px; height:40px; object-fit:contain; }
+
+/* Album art styled same as icons */
+#album-art { width:80px; height:80px; border-radius:12px; box-shadow:0 0 20px #7e5bef; }
 
 /* Music controls */
 #music-controls {
@@ -75,13 +82,7 @@ body {
 
 #music-controls button:hover { transform:scale(1.1); }
 
-/* Album art and progress bar */
-#music-info {
-  display:flex; flex-direction:column; align-items:center; gap:12px;
-}
-
-#album-art { width:100px; height:100px; border-radius:12px; box-shadow:0 0 20px #7e5bef; }
-
+/* Progress bar */
 #progress-container {
   width:150px; height:6px; background:#1f2937; border-radius:3px; overflow:hidden;
   box-shadow:0 0 12px #7e5bef inset,0 0 18px #b68aff inset;
@@ -98,56 +99,61 @@ body {
   transition:opacity .2s ease, transform .2s ease; z-index:3;
 }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
 </style>
 </head>
 <body>
-  <!-- Landing overlay -->
-  <div id="landing-overlay">
-    <div id="landing-content">
-      <button id="enter-btn">Enter</button>
-    </div>
+
+<!-- Landing overlay -->
+<div id="landing-overlay">
+  <div id="landing-content">
+    <button id="enter-btn">Enter</button>
+  </div>
+</div>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- Center container -->
+<div id="center-container">
+
+  <!-- Grid with icons + album art in the middle -->
+  <div class="grid" id="links">
+    <!-- Row 1 -->
+    <div class="item" data-type="link" data-href="https://youtube.com/@baguette_69-69"><div class="circle"><img src="logos/youtube.png"></div></div>
+    <div class="item" data-type="link" data-href="https://open.spotify.com/user/1257265584?si=ce8dd88c90bf4bc7"><div class="circle"><img src="logos/spotify.png"></div></div>
+    <div class="item" data-type="link" data-href="https://tiktok.com/@ferrets_are_noodles0_0"><div class="circle"><img src="logos/tiktok.png"></div></div>
+    <!-- Row 2 -->
+    <div class="item" data-type="link" data-href="https://twitch.tv/the_stoned_frog"><div class="circle"><img src="logos/twitch.png"></div></div>
+    <div class="item"><div class="circle"><img id="album-art" src="music/album-cover.jpg"></div></div>
+    <div class="item" data-type="link" data-href="https://vk.com/f3rr3ts"><div class="circle"><img src="logos/vk.png"></div></div>
+    <!-- Row 3 -->
+    <div class="item" data-type="link" data-href="https://steamcommunity.com/profiles/76561199750130807/"><div class="circle"><img src="logos/steam.png"></div></div>
+    <div class="item" data-type="link" data-href="https://cash.app/$ferretscash"><div class="circle"><img src="logos/cashapp.png"></div></div>
+    <div class="item" data-type="link" data-href="https://paypal.me/ferrets69"><div class="circle"><img src="logos/paypal.png"></div></div>
+    <!-- Row 4 -->
+    <div class="item" data-type="link" data-href="https://ko-fi.com/f3rr3ts"><div class="circle"><img src="logos/kofi.png"></div></div>
+    <div class="item" data-type="link" data-href="https://throne.com/ferr3"><div class="circle"><img src="logos/throne.png"></div></div>
+    <div class="item" data-type="wallet" data-value="bc1qf5yj006aul7nly7xycpzyl4tzy7gh90audrjla"><div class="circle"><img src="logos/bitcoin.png"></div></div>
+    <!-- Row 5 -->
+    <div class="item" data-type="wallet" data-value="0xD40247e7b3f7F081f8Db3EC582afBDE9F59451Fe"><div class="circle"><img src="logos/ethereum.png"></div></div>
+    <div class="item" data-type="wallet" data-value="LNR7PxLc5ffrhnKgXptcvgjBRiAd32E1VU"><div class="circle"><img src="logos/litecoin.png"></div></div>
   </div>
 
-  <canvas id="bg-canvas"></canvas>
-
-  <!-- Centered content -->
-  <div id="center-container">
-    <div class="grid" id="links">
-      <!-- Socials -->
-      <div class="item" data-type="link" data-href="https://youtube.com/@baguette_69-69"><div class="circle"><img src="logos/youtube.png"></div></div>
-      <div class="item" data-type="link" data-href="https://open.spotify.com/user/1257265584?si=ce8dd88c90bf4bc7"><div class="circle"><img src="logos/spotify.png"></div></div>
-      <div class="item" data-type="link" data-href="https://tiktok.com/@ferrets_are_noodles0_0"><div class="circle"><img src="logos/tiktok.png"></div></div>
-      <div class="item" data-type="link" data-href="https://twitch.tv/the_stoned_frog"><div class="circle"><img src="logos/twitch.png"></div></div>
-      <div class="item" data-type="link" data-href="https://vk.com/f3rr3ts"><div class="circle"><img src="logos/vk.png"></div></div>
-      <div class="item" data-type="link" data-href="https://steamcommunity.com/profiles/76561199750130807/"><div class="circle"><img src="logos/steam.png"></div></div>
-      <div class="item" data-type="link" data-href="https://cash.app/$ferretscash"><div class="circle"><img src="logos/cashapp.png"></div></div>
-      <div class="item" data-type="link" data-href="https://paypal.me/ferrets69"><div class="circle"><img src="logos/paypal.png"></div></div>
-      <div class="item" data-type="link" data-href="https://ko-fi.com/f3rr3ts"><div class="circle"><img src="logos/kofi.png"></div></div>
-      <div class="item" data-type="link" data-href="https://throne.com/ferr3"><div class="circle"><img src="logos/throne.png"></div></div>
-      <!-- Crypto -->
-      <div class="item" data-type="wallet" data-value="bc1qf5yj006aul7nly7xycpzyl4tzy7gh90audrjla"><div class="circle"><img src="logos/bitcoin.png"></div></div>
-      <div class="item" data-type="wallet" data-value="0xD40247e7b3f7F081f8Db3EC582afBDE9F59451Fe"><div class="circle"><img src="logos/ethereum.png"></div></div>
-      <div class="item" data-type="wallet" data-value="LNR7PxLc5ffrhnKgXptcvgjBRiAd32E1VU"><div class="circle"><img src="logos/litecoin.png"></div></div>
-    </div>
-
-    <!-- Music controls -->
-    <div id="music-controls">
-      <button id="play-pause-btn">▶</button>
-      <button id="restart-btn">⟳</button>
-    </div>
-
-    <!-- Album art + progress -->
-    <div id="music-info">
-      <img id="album-art" src="music/album-cover.jpg">
-      <div id="progress-container"><div id="progress-bar"></div></div>
-    </div>
+  <!-- Music controls -->
+  <div id="music-controls">
+    <button id="play-pause-btn">▶</button>
+    <button id="restart-btn">⟳</button>
   </div>
 
-  <audio id="bg-music" loop>
-    <source src="music/keeping secrets - wifiskeleton.mp3" type="audio/mpeg">
-  </audio>
+  <!-- Progress bar -->
+  <div id="progress-container"><div id="progress-bar"></div></div>
+</div>
 
-  <div id="toast" class="toast">Copied!</div>
+<audio id="bg-music" loop>
+  <source src="music/keeping secrets - wifiskeleton.mp3" type="audio/mpeg">
+</audio>
+
+<div id="toast" class="toast">Copied!</div>
 
 <script>
 const landingOverlay=document.getElementById('landing-overlay');
