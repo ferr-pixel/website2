@@ -1,362 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Ferrets Links</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      margin: 0;
-      padding: 30px;
-      overflow: hidden;
-      background: #000;
-      color: #fff;
-      text-align: center;
-    }
+<meta charset="UTF-8">
+<title>Ferrets Links</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    margin:0; padding:0;
+    overflow:hidden;
+    background:#000;
+    font-family:system-ui,sans-serif;
+  }
 
-    h1 { margin-bottom: 24px; z-index: 2; position: relative; }
+  #bg-canvas {
+    position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1;
+  }
 
-    /* Canvas background */
-    #bg-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
+  /* Landing overlay */
+  #landing-overlay {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:#0f0f0f;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    z-index:999;
+  }
 
-    /* Grid for links */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      gap: 18px;
-      justify-items: center;
-      z-index: 2;
-      position: relative;
-    }
+  #landing-content button {
+    width:120px; height:50px;
+    border:none; border-radius:12px; background:#7e5bef; cursor:pointer;
+    box-shadow:0 0 15px #7e5bef,0 0 30px #b68aff;
+  }
 
-    /* Purple panel behind icon */
-    .panel {
-      background: linear-gradient(135deg, #7e5bef, #b68aff);
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+  #landing-overlay.hidden { opacity:0; pointer-events:none; transition:0.5s; }
 
-    .panel:hover {
-      transform: scale(1.08);
-      box-shadow: 0 0 20px #b68aff;
-    }
+  /* Center container for everything */
+  #center-container {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    display:flex; flex-direction:column; align-items:center; gap:24px; z-index:2;
+  }
 
-    /* Circle icon */
-    .circle {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: #1f2937;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      transition: transform .15s ease, box-shadow .15s ease;
-    }
+  /* Icon grid */
+  .grid {
+    display:flex; flex-wrap:wrap; gap:16px; justify-content:center; align-items:center;
+  }
 
-    .circle img {
-      width: 32px;
-      height: 32px;
-      object-fit: contain;
-    }
+  .circle {
+    width:60px; height:60px; border-radius:50%; background:#1f2937;
+    display:flex; justify-content:center; align-items:center;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,0.4);
+    transition: transform .2s, box-shadow .2s;
+  }
 
-    .label {
-      margin-top: 6px;
-      font-size: 13px;
-      color: #cbd5e1;
-      text-shadow: 0 0 5px #7e5bef;
-    }
+  .circle:hover { transform:scale(1.1); box-shadow:0 0 25px #7e5bef; }
 
-    /* Toast notification */
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: #111827;
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 8px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-      opacity: 0;
-      transition: opacity .2s ease, transform .2s ease;
-      z-index: 3;
-    }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+  .circle img { width:32px; height:32px; object-fit:contain; }
 
-    /* Music buttons */
-    #music-controls {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      z-index: 3;
-      position: relative;
-    }
+  /* Music controls */
+  #music-controls {
+    display:flex; gap:16px;
+  }
 
-    #music-controls button {
-      padding: 8px 14px;
-      border: none;
-      border-radius: 8px;
-      background: #7e5bef;
-      color: #fff;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-      box-shadow: 0 0 10px #7e5bef, 0 0 20px #b68aff;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
+  #music-controls button {
+    width:50px; height:50px; border:none; border-radius:50%; background:#7e5bef;
+    cursor:pointer; box-shadow:0 0 15px #7e5bef,0 0 30px #b68aff;
+    display:flex; justify-content:center; align-items:center;
+    font-size:20px; color:#fff;
+  }
 
-    #music-controls button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 25px #7e5bef, 0 0 35px #b68aff, 0 0 50px #7e5bef;
-    }
+  #music-controls button:hover { transform:scale(1.1); }
 
-    /* Music info: album art + title + progress bar */
-    #music-info {
-      margin-top: 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      z-index: 3;
-      position: relative;
-    }
+  /* Album art & progress bar */
+  #music-info {
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+  }
 
-    #album-art {
-      width: 80px;
-      height: 80px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px #7e5bef, 0 0 30px #b68aff;
-      margin-bottom: 6px;
-      transition: box-shadow 0.3s ease, transform 0.3s ease;
-    }
+  #album-art { width:80px; height:80px; border-radius:12px; box-shadow:0 0 15px #7e5bef; }
 
-    #album-art:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 25px #7e5bef, 0 0 40px #b68aff, 0 0 60px #7e5bef;
-    }
+  #progress-container {
+    width:120px; height:6px; background:#1f2937; border-radius:3px; overflow:hidden;
+    box-shadow:0 0 10px #7e5bef inset,0 0 15px #b68aff inset;
+  }
 
-    #song-title {
-      color: #cbd5e1;
-      font-size: 14px;
-      margin-bottom: 6px;
-      text-shadow: 0 0 5px #7e5bef;
-    }
+  #progress-bar { width:0%; height:100%; background:linear-gradient(90deg,#7e5bef,#b68aff);
+    border-radius:3px; box-shadow:0 0 10px #7e5bef,0 0 15px #b68aff; transition:width 0.1s linear; }
 
-    #progress-container {
-      width: 120px;
-      height: 6px;
-      background: #1f2937;
-      border-radius: 3px;
-      overflow: hidden;
-      box-shadow: 0 0 10px #7e5bef inset, 0 0 15px #b68aff inset;
-    }
-
-    #progress-bar {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #7e5bef, #b68aff);
-      border-radius: 3px;
-      box-shadow: 0 0 10px #7e5bef, 0 0 15px #b68aff;
-      transition: width 0.1s linear, box-shadow 0.3s ease;
-      animation: pulse 2s infinite alternate;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 10px #7e5bef, 0 0 15px #b68aff; }
-      100% { box-shadow: 0 0 20px #7e5bef, 0 0 30px #b68aff; }
-    }
-  </style>
+  /* Toast */
+  .toast {
+    position:fixed; bottom:30px; left:50%; transform:translateX(-50%);
+    background:#111827; color:#fff; padding:10px 16px; border-radius:8px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.6); opacity:0;
+    transition:opacity .2s ease, transform .2s ease; z-index:3;
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
 </head>
 <body>
-  <canvas id="bg-canvas"></canvas>
-
-  <h1>Ferrets Links</h1>
-
-  <div class="grid" id="links">
-    <!-- Socials -->
-    <div class="item" data-type="link" data-href="https://youtube.com/@baguette_69-69">
-      <div class="panel"><div class="circle"><img src="logos/youtube.png" alt="YouTube"></div></div>
-      <div class="label">YouTube</div>
-    </div>
-    <div class="item" data-type="link" data-href="https://open.spotify.com/user/1257265584?si=ce8dd88c90bf4bc7">
-      <div class="panel"><div class="circle"><img src="logos/spotify.png" alt="Spotify"></div></div>
-      <div class="label">Spotify</div>
-    </div>
-    <div class="item" data-type="link" data-href="https://tiktok.com/@ferrets_are_noodles0_0">
-      <div class="panel"><div class="circle"><img src="logos/tiktok.png" alt="TikTok"></div></div>
-      <div class="label">TikTok</div>
-    </div>
-    <div class="item" data-type="link" data-href="https://twitch.tv/the_stoned_frog">
-      <div class="panel"><div class="circle"><img src="logos/twitch.png" alt="Twitch"></div></div>
-      <div class="label">Twitch</div>
-    </div>
-    <div class="item" data-type="link" data-href="https://vk.com/f3rr3ts">
-      <div class="panel"><div class="circle"><img src="logos/vk.png" alt="VK"></div></div>
-      <div class="label">VK</div>
-    </div>
-    <div class="item" data-type="link" data-href="https://steamcommunity.com/profiles/76561199750130807/">
-      <div class="panel"><div class="circle"><img src="logos/steam.png" alt="Steam"></div></div>
-      <div class="label">Steam</div>
-    </div>
-    <div class="item" data-type="link" data-href="https://cash.app/$ferretscash">
-      <div class="panel"><div class="circle"><img src="logos/cashapp.png" alt="CashApp"></div></div>
-      <div class="label">CashApp</div>
-    </div>
-    <div class="item" data-type="link" data-href="https://paypal.me/ferrets69">
-      <div class="panel"><div class="circle"><img src="logos/paypal.png" alt="PayPal"></div></div>
-      <div class="label">PayPal</div>
-    </div>
-    <div class="item" data-type="link" data-href="https://ko-fi.com/f3rr3ts">
-      <div class="panel"><div class="circle"><img src="logos/kofi.png" alt="Ko-fi"></div></div>
-      <div class="label">Ko-fi</div>
-    </div>
-    <div class="item" data-type="link" data-href="https://throne.com/ferr3">
-      <div class="panel"><div class="circle"><img src="logos/throne.png" alt="Throne"></div></div>
-      <div class="label">Throne</div>
-    </div>
-
-    <!-- Crypto (copy only) -->
-    <div class="item" data-type="wallet" data-value="bc1qf5yj006aul7nly7xycpzyl4tzy7gh90audrjla">
-      <div class="panel"><div class="circle"><img src="logos/bitcoin.png" alt="Bitcoin"></div></div>
-      <div class="label">BTC</div>
-    </div>
-    <div class="item" data-type="wallet" data-value="0xD40247e7b3f7F081f8Db3EC582afBDE9F59451Fe">
-      <div class="panel"><div class="circle"><img src="logos/ethereum.png" alt="Ethereum"></div></div>
-      <div class="label">ETH</div>
-    </div>
-    <div class="item" data-type="wallet" data-value="LNR7PxLc5ffrhnKgXptcvgjBRiAd32E1VU">
-      <div class="panel"><div class="circle"><img src="logos/litecoin.png" alt="Litecoin"></div></div>
-      <div class="label">LTC</div>
+  <!-- Landing overlay -->
+  <div id="landing-overlay">
+    <div id="landing-content">
+      <button id="enter-btn">Enter</button>
     </div>
   </div>
 
-  <div id="toast" class="toast">Copied!</div>
+  <canvas id="bg-canvas"></canvas>
 
-  <!-- Background Music -->
+  <!-- Center everything -->
+  <div id="center-container">
+    <div class="grid" id="links">
+      <div class="item" data-type="link" data-href="https://youtube.com/@baguette_69-69"><div class="circle"><img src="logos/youtube.png"></div></div>
+      <div class="item" data-type="link" data-href="https://open.spotify.com/user/1257265584?si=ce8dd88c90bf4bc7"><div class="circle"><img src="logos/spotify.png"></div></div>
+      <div class="item" data-type="wallet" data-value="bc1qf5yj006aul7nly7xycpzyl4tzy7gh90audrjla"><div class="circle"><img src="logos/bitcoin.png"></div></div>
+      <div class="item" data-type="wallet" data-value="0xD40247e7b3f7F081f8Db3EC582afBDE9F59451Fe"><div class="circle"><img src="logos/ethereum.png"></div></div>
+      <!-- Add other icons similarly -->
+    </div>
+
+    <div id="music-controls">
+      <button id="play-pause-btn">▶</button>
+      <button id="restart-btn">⟳</button>
+    </div>
+
+    <div id="music-info">
+      <img id="album-art" src="music/album-cover.jpg">
+      <div id="progress-container"><div id="progress-bar"></div></div>
+    </div>
+  </div>
+
   <audio id="bg-music" loop>
     <source src="music/keeping secrets - wifiskeleton.mp3" type="audio/mpeg">
   </audio>
 
-  <div id="music-controls">
-    <button id="play-btn">▶ Play Music</button>
-    <button id="stop-btn">⏹ Stop Music</button>
-  </div>
+  <div id="toast" class="toast">Copied!</div>
 
-  <!-- Music Info -->
-  <div id="music-info">
-    <img id="album-art" src="music/album-cover.jpg" alt="Album Cover">
-    <div id="song-title">Keeping Secrets - Wifiskeleton</div>
-    <div id="progress-container">
-      <div id="progress-bar"></div>
-    </div>
-  </div>
+<script>
+  const landingOverlay=document.getElementById('landing-overlay');
+  const enterBtn=document.getElementById('enter-btn');
+  const music=document.getElementById('bg-music');
+  const playPauseBtn=document.getElementById('play-pause-btn');
+  const restartBtn=document.getElementById('restart-btn');
+  const progressBar=document.getElementById('progress-bar');
 
-  <script>
-    // Starfield background
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let stars = [];
-    const numStars = 120;
+  enterBtn.addEventListener('click',()=>{
+    landingOverlay.classList.add('hidden');
+    music.play();
+    playPauseBtn.textContent='⏸';
+  });
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+  playPauseBtn.addEventListener('click',()=>{
+    if(music.paused){ music.play(); playPauseBtn.textContent='⏸'; }
+    else { music.pause(); playPauseBtn.textContent='▶'; }
+  });
 
-    for(let i=0;i<numStars;i++){
-      stars.push({
-        x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height,
-        r: Math.random()*1.5 + 0.5,
-        speed: Math.random()*0.5 + 0.2
-      });
-    }
+  restartBtn.addEventListener('click',()=>{
+    music.currentTime=0; music.play(); playPauseBtn.textContent='⏸';
+  });
 
-    function animateStars(){
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = 'white';
-      stars.forEach(s => {
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-        ctx.fill();
-        s.y += s.speed;
-        if(s.y > canvas.height) s.y = 0;
-      });
-      requestAnimationFrame(animateStars);
-    }
-    animateStars();
+  music.addEventListener('timeupdate',()=>{
+    progressBar.style.width=(music.currentTime/music.duration*100)+'%';
+  });
 
-    // Copy + link behavior
-    const container = document.getElementById('links');
-    const toast = document.getElementById('toast');
-    let timer;
+  // Starfield
+  const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d'),stars=[];
+  const numStars=120;
+  function resizeCanvas(){canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
+  window.addEventListener('resize',resizeCanvas); resizeCanvas();
+  for(let i=0;i<numStars;i++){stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5+0.5,speed:Math.random()*0.5+0.2});}
+  function animateStars(){ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='white';
+    stars.forEach(s=>{ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill(); s.y+=s.speed; if(s.y>canvas.height)s.y=0;});
+    requestAnimationFrame(animateStars);}
+  animateStars();
 
-    function showToast(msg) {
-      toast.textContent = msg;
-      toast.classList.add('show');
-      clearTimeout(timer);
-      timer = setTimeout(()=>toast.classList.remove('show'), 1500);
-    }
-
-    async function copyToClipboard(text) {
-      try {
-        await navigator.clipboard.writeText(text);
-        showToast("Copied: " + text.slice(0,6) + "…");
-      } catch(e) {
-        showToast("Copy failed");
-      }
-    }
-
-    container.addEventListener('click', e => {
-      const item = e.target.closest('.item');
-      if (!item) return;
-      const type = item.dataset.type;
-      if (type === "link") {
-        window.open(item.dataset.href, "_blank");
-      } else if (type === "wallet") {
-        copyToClipboard(item.dataset.value);
-      }
-    });
-
-    // Music controls
-    const music = document.getElementById('bg-music');
-    const playBtn = document.getElementById('play-btn');
-    const stopBtn = document.getElementById('stop-btn');
-    const progressBar = document.getElementById('progress-bar');
-
-    playBtn.addEventListener('click', () => music.play());
-    stopBtn.addEventListener('click', () => { music.pause(); music.currentTime = 0; progressBar.style.width = '0%'; });
-
-    // Update progress bar
-    music.addEventListener('timeupdate', () => {
-      const percent = (music.currentTime / music.duration) * 100;
-      progressBar.style.width = percent + '%';
-    });
-
-    // Loop track
-    music.addEventListener('ended', () => {
-      music.currentTime = 0;
-      music.play();
-    });
-  </script>
+  // Copy + links
+  const container=document.getElementById('links'); const toast=document.getElementById('toast'); let timer;
+  function showToast(msg){toast.textContent=msg; toast.classList.add('show'); clearTimeout(timer); timer=setTimeout(()=>toast.classList.remove('show'),1500);}
+  async function copyToClipboard(text){try{await navigator.clipboard.writeText(text); showToast("Copied: "+text.slice(0,6)+'…');}catch(e){showToast("Copy failed");}}
+  container.addEventListener('click',e=>{const item=e.target.closest('.item'); if(!item)return; const type=item.dataset.type;
+    if(type==='link'){window.open(item.dataset.href,'_blank');} else if(type==='wallet'){copyToClipboard(item.dataset.value);}});
+</script>
 </body>
 </html>
