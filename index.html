@@ -124,8 +124,8 @@
     }
 
     #music-controls button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px #7e5bef, 0 0 25px #b68aff;
+      transform: scale(1.1);
+      box-shadow: 0 0 25px #7e5bef, 0 0 35px #b68aff, 0 0 50px #7e5bef;
     }
 
     /* Music info: album art + title + progress bar */
@@ -142,8 +142,14 @@
       width: 80px;
       height: 80px;
       border-radius: 12px;
-      box-shadow: 0 0 15px #7e5bef;
+      box-shadow: 0 0 15px #7e5bef, 0 0 30px #b68aff;
       margin-bottom: 6px;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    #album-art:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px #7e5bef, 0 0 40px #b68aff, 0 0 60px #7e5bef;
     }
 
     #song-title {
@@ -159,14 +165,22 @@
       background: #1f2937;
       border-radius: 3px;
       overflow: hidden;
+      box-shadow: 0 0 10px #7e5bef inset, 0 0 15px #b68aff inset;
     }
 
     #progress-bar {
       width: 0%;
       height: 100%;
-      background: #7e5bef;
+      background: linear-gradient(90deg, #7e5bef, #b68aff);
       border-radius: 3px;
-      transition: width 0.1s linear;
+      box-shadow: 0 0 10px #7e5bef, 0 0 15px #b68aff;
+      transition: width 0.1s linear, box-shadow 0.3s ease;
+      animation: pulse 2s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px #7e5bef, 0 0 15px #b68aff; }
+      100% { box-shadow: 0 0 20px #7e5bef, 0 0 30px #b68aff; }
     }
   </style>
 </head>
