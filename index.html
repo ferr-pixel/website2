@@ -7,24 +7,56 @@
   <style>
     body {
       font-family: system-ui, sans-serif;
-      background: #0f1724;
-      color: #fff;
-      text-align: center;
       margin: 0;
       padding: 30px;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+      text-align: center;
     }
-    h1 { margin-bottom: 24px; }
 
+    h1 { margin-bottom: 24px; z-index: 2; position: relative; }
+
+    /* Canvas background */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* Grid for links */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
       gap: 18px;
       justify-items: center;
+      z-index: 2;
+      position: relative;
     }
 
+    /* Purple panel behind icon */
+    .panel {
+      background: linear-gradient(135deg, #7e5bef, #b68aff);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .panel:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 20px #b68aff;
+    }
+
+    /* Circle icon */
     .circle {
-      width: 80px;
-      height: 80px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       background: #1f2937;
       display: flex;
@@ -34,14 +66,10 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       transition: transform .15s ease, box-shadow .15s ease;
     }
-    .circle:hover {
-      transform: scale(1.08);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
-    }
 
     .circle img {
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       object-fit: contain;
     }
 
@@ -64,76 +92,137 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.6);
       opacity: 0;
       transition: opacity .2s ease, transform .2s ease;
+      z-index: 3;
     }
     .toast.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
+
+    /* Music button */
+    #play-btn {
+      margin-top: 20px;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      background: #7e5bef;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      transition: transform .15s ease;
+    }
+    #play-btn:hover { transform: scale(1.05); }
   </style>
 </head>
 <body>
+  <canvas id="bg-canvas"></canvas>
+
   <h1>Ferrets Links</h1>
+
   <div class="grid" id="links">
     <!-- Socials -->
     <div class="item" data-type="link" data-href="https://youtube.com/@baguette_69-69">
-      <div class="circle"><img src="logos/youtube.png" alt="YouTube"></div>
+      <div class="panel"><div class="circle"><img src="logos/youtube.png" alt="YouTube"></div></div>
       <div class="label">YouTube</div>
     </div>
     <div class="item" data-type="link" data-href="https://open.spotify.com/user/1257265584?si=ce8dd88c90bf4bc7">
-      <div class="circle"><img src="logos/spotify.png" alt="Spotify"></div>
+      <div class="panel"><div class="circle"><img src="logos/spotify.png" alt="Spotify"></div></div>
       <div class="label">Spotify</div>
     </div>
     <div class="item" data-type="link" data-href="https://tiktok.com/@ferrets_are_noodles0_0">
-      <div class="circle"><img src="logos/tiktok.png" alt="TikTok"></div>
+      <div class="panel"><div class="circle"><img src="logos/tiktok.png" alt="TikTok"></div></div>
       <div class="label">TikTok</div>
     </div>
     <div class="item" data-type="link" data-href="https://twitch.tv/the_stoned_frog">
-      <div class="circle"><img src="logos/twitch.png" alt="Twitch"></div>
+      <div class="panel"><div class="circle"><img src="logos/twitch.png" alt="Twitch"></div></div>
       <div class="label">Twitch</div>
     </div>
     <div class="item" data-type="link" data-href="https://vk.com/f3rr3ts">
-      <div class="circle"><img src="logos/vk.png" alt="VK"></div>
+      <div class="panel"><div class="circle"><img src="logos/vk.png" alt="VK"></div></div>
       <div class="label">VK</div>
     </div>
     <div class="item" data-type="link" data-href="https://steamcommunity.com/profiles/76561199750130807/">
-      <div class="circle"><img src="logos/steam.png" alt="Steam"></div>
+      <div class="panel"><div class="circle"><img src="logos/steam.png" alt="Steam"></div></div>
       <div class="label">Steam</div>
     </div>
     <div class="item" data-type="link" data-href="https://cash.app/$ferretscash">
-      <div class="circle"><img src="logos/cashapp.png" alt="CashApp"></div>
+      <div class="panel"><div class="circle"><img src="logos/cashapp.png" alt="CashApp"></div></div>
       <div class="label">CashApp</div>
     </div>
     <div class="item" data-type="link" data-href="https://paypal.me/ferrets69">
-      <div class="circle"><img src="logos/paypal.png" alt="PayPal"></div>
+      <div class="panel"><div class="circle"><img src="logos/paypal.png" alt="PayPal"></div></div>
       <div class="label">PayPal</div>
     </div>
     <div class="item" data-type="link" data-href="https://ko-fi.com/f3rr3ts">
-      <div class="circle"><img src="logos/kofi.png" alt="Ko-fi"></div>
+      <div class="panel"><div class="circle"><img src="logos/kofi.png" alt="Ko-fi"></div></div>
       <div class="label">Ko-fi</div>
     </div>
     <div class="item" data-type="link" data-href="https://throne.com/ferr3">
-      <div class="circle"><img src="logos/throne.png" alt="Throne"></div>
+      <div class="panel"><div class="circle"><img src="logos/throne.png" alt="Throne"></div></div>
       <div class="label">Throne</div>
     </div>
 
     <!-- Crypto (copy only) -->
     <div class="item" data-type="wallet" data-value="bc1qf5yj006aul7nly7xycpzyl4tzy7gh90audrjla">
-      <div class="circle"><img src="logos/bitcoin.png" alt="Bitcoin"></div>
+      <div class="panel"><div class="circle"><img src="logos/bitcoin.png" alt="Bitcoin"></div></div>
       <div class="label">BTC</div>
     </div>
     <div class="item" data-type="wallet" data-value="0xD40247e7b3f7F081f8Db3EC582afBDE9F59451Fe">
-      <div class="circle"><img src="logos/ethereum.png" alt="Ethereum"></div>
+      <div class="panel"><div class="circle"><img src="logos/ethereum.png" alt="Ethereum"></div></div>
       <div class="label">ETH</div>
     </div>
     <div class="item" data-type="wallet" data-value="LNR7PxLc5ffrhnKgXptcvgjBRiAd32E1VU">
-      <div class="circle"><img src="logos/litecoin.png" alt="Litecoin"></div>
+      <div class="panel"><div class="circle"><img src="logos/litecoin.png" alt="Litecoin"></div></div>
       <div class="label">LTC</div>
     </div>
   </div>
 
   <div id="toast" class="toast">Copied!</div>
 
+  <!-- Background Music -->
+  <audio id="bg-music" loop>
+    <source src="music/background.mp3" type="audio/mpeg">
+  </audio>
+  <button id="play-btn" onclick="document.getElementById('bg-music').play()">▶ Play Music</button>
+
   <script>
+    // Starfield background
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    const numStars = 120;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    for(let i=0;i<numStars;i++){
+      stars.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        r: Math.random()*1.5 + 0.5,
+        speed: Math.random()*0.5 + 0.2
+      });
+    }
+
+    function animateStars(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = 'white';
+      stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fill();
+        s.y += s.speed;
+        if(s.y > canvas.height) s.y = 0;
+      });
+      requestAnimationFrame(animateStars);
+    }
+    animateStars();
+
+    // Copy + link behavior
     const container = document.getElementById('links');
     const toast = document.getElementById('toast');
     let timer;
