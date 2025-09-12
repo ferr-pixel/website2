@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ferrets Links</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f1724;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 30px;
+    }
+    h1 { margin-bottom: 24px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 18px;
+      justify-items: center;
+    }
+
+    .circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .circle:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+    }
+
+    .circle img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .label {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #111827;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      opacity: 0;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <h1>Ferrets Links</h1>
+  <div class="grid" id="links">
+    <!-- Socials -->
+    <div class="item" data-type="link" data-href="https://youtube.com/@baguette_69-69">
+      <div class="circle"><img src="logos/youtube.png" alt="YouTube"></div>
+      <div class="label">YouTube</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://open.spotify.com/user/1257265584?si=ce8dd88c90bf4bc7">
+      <div class="circle"><img src="logos/spotify.png" alt="Spotify"></div>
+      <div class="label">Spotify</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://tiktok.com/@ferrets_are_noodles0_0">
+      <div class="circle"><img src="logos/tiktok.png" alt="TikTok"></div>
+      <div class="label">TikTok</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://twitch.tv/the_stoned_frog">
+      <div class="circle"><img src="logos/twitch.png" alt="Twitch"></div>
+      <div class="label">Twitch</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://vk.com/f3rr3ts">
+      <div class="circle"><img src="logos/vk.png" alt="VK"></div>
+      <div class="label">VK</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://steamcommunity.com/profiles/76561199750130807/">
+      <div class="circle"><img src="logos/steam.png" alt="Steam"></div>
+      <div class="label">Steam</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://cash.app/$ferretscash">
+      <div class="circle"><img src="logos/cashapp.png" alt="CashApp"></div>
+      <div class="label">CashApp</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://paypal.me/ferrets69">
+      <div class="circle"><img src="logos/paypal.png" alt="PayPal"></div>
+      <div class="label">PayPal</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://ko-fi.com/f3rr3ts">
+      <div class="circle"><img src="logos/kofi.png" alt="Ko-fi"></div>
+      <div class="label">Ko-fi</div>
+    </div>
+    <div class="item" data-type="link" data-href="https://throne.com/ferr3">
+      <div class="circle"><img src="logos/throne.png" alt="Throne"></div>
+      <div class="label">Throne</div>
+    </div>
+
+    <!-- Crypto (copy only) -->
+    <div class="item" data-type="wallet" data-value="bc1qf5yj006aul7nly7xycpzyl4tzy7gh90audrjla">
+      <div class="circle"><img src="logos/bitcoin.png" alt="Bitcoin"></div>
+      <div class="label">BTC</div>
+    </div>
+    <div class="item" data-type="wallet" data-value="0xD40247e7b3f7F081f8Db3EC582afBDE9F59451Fe">
+      <div class="circle"><img src="logos/ethereum.png" alt="Ethereum"></div>
+      <div class="label">ETH</div>
+    </div>
+    <div class="item" data-type="wallet" data-value="LNR7PxLc5ffrhnKgXptcvgjBRiAd32E1VU">
+      <div class="circle"><img src="logos/litecoin.png" alt="Litecoin"></div>
+      <div class="label">LTC</div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copied!</div>
+
+  <script>
+    const container = document.getElementById('links');
+    const toast = document.getElementById('toast');
+    let timer;
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(timer);
+      timer = setTimeout(()=>toast.classList.remove('show'), 1500);
+    }
+
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("Copied: " + text.slice(0,6) + "…");
+      } catch(e) {
+        showToast("Copy failed");
+      }
+    }
+
+    container.addEventListener('click', e => {
+      const item = e.target.closest('.item');
+      if (!item) return;
+      const type = item.dataset.type;
+      if (type === "link") {
+        window.open(item.dataset.href, "_blank");
+      } else if (type === "wallet") {
+        copyToClipboard(item.dataset.value);
+      }
+    });
+  </script>
+</body>
+</html>
