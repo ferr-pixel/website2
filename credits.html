@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Credits</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  margin:0;
+  padding:0;
+  background:#000;
+  color:#fff;
+  font-family:system-ui, sans-serif;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* Stars background */
+#bg-canvas {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+}
+
+/* Content styling */
+h1 {
+  font-size:2.5em;
+  margin-bottom:20px;
+  text-shadow:0 0 20px #7e5bef, 0 0 40px #b68aff;
+}
+
+p {
+  font-size:1.2em;
+  max-width:600px;
+  margin:10px auto;
+  line-height:1.5;
+}
+
+a {
+  color:#7e5bef;
+  text-decoration:none;
+  transition:color .2s;
+}
+a:hover {
+  color:#b68aff;
+  text-shadow:0 0 10px #7e5bef;
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<h1>Credits</h1>
+<p>Website created by <strong>F3rr3tz for reincoltation  </strong>.</p>
+<p>Music: <em>"A Void Pulled Blackhole - Reincoltation"</em></p>
+<p>Join the discord! discord.gg/DnDk86tM74</p>
+<p>This was made from help with chatgpt idk how tf to code 😭🙏</p>
+
+<p><a href="index.html">⬅ Back to Home</a></p>
+
+<script>
+// Starfield background
+const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d'),stars=[];
+const numStars=120;
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+window.addEventListener('resize',resizeCanvas);resizeCanvas();
+for(let i=0;i<numStars;i++){stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5+0.5,speed:Math.random()*0.5+0.2});}
+function animateStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='white';
+  stars.forEach(s=>{
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fill();
+    s.y+=s.speed;
+    if(s.y>canvas.height) s.y=0;
+  });
+  requestAnimationFrame(animateStars);
+}
+animateStars();
+</script>
+
+</body>
+</html>
+
+
